@@ -3,7 +3,7 @@
 #include <string>
 
 void printMenu();
-std::string getAvailableLetters(int roundNumber);
+std::string getAvailableLetters();
 bool lettersCheck(const std::string& inputWord, std::string& availableLetters);
 bool wordDictionaryCheck(const std::string& inputWord); 
 
@@ -14,8 +14,14 @@ int main()
 	int numberChoiceFromMenu;
 	std::cin >> numberChoiceFromMenu;
 
-	int letterCount = 10;
+	while (numberChoiceFromMenu < 1 || numberChoiceFromMenu > 4)
+	{
+		std::cout << "Please enter valid number from the menu (1-4) :";
+		std::cin >> numberChoiceFromMenu;
+	}
+
 	int roundCount  = 10;
+	int letterCount = 10;
 
     if (numberChoiceFromMenu == 2)
 	{
@@ -28,12 +34,24 @@ int main()
 			std::cout << "Note: maximum possible round count is 20. " << std::endl;
 			std::cout << "Change round count to : ";
 			std::cin >> roundCount;
+
+			while (roundCount < 1 || roundCount > 20)
+			{
+				std::cout << "Round Count should be in the range of [1;20]. Please enter new number: ";
+				std::cin >> roundCount;
+
+			}
 		}
 		else if (settingChoice == 'a')
 		{
-			std::cout << "Change letter count to : ";
-			std::cin >> letterCount;
+			std::cout << "Change letter count to 15 or stay at 10 (Enter 15 or 10): ";
+			std::cin >>letterCount;
 
+			while (letterCount != 15 && letterCount != 10)
+			{
+				std::cout << "Please enter valid letter count (15 or 10) :";
+				std::cin >> letterCount;
+			}
 		}
 	}
 
@@ -43,7 +61,7 @@ int main()
 	{   
 		std::cout << std::endl;
 		std::cout << "Round "<< i << ". Available letters: "; 
-		std::string availableLetters = getAvailableLetters(letterCount);
+		std::string availableLetters = getAvailableLetters();
 		std::cout << availableLetters << std::endl;
 
 		std::cout << "Enter a word: " << std::endl;
@@ -63,13 +81,12 @@ int main()
 			else
 			{
 				std::cout << "Invalid word." << std::endl;
-				std::cout << "Enter N for new letters or Try again with: ";
+				std::cout << "Try again with: ";
 				std::cout << availableLetters << std::endl;
-				
 			}
-			std::cout << std::endl;
-
 		} while (lettersCheck(word, availableLetters) == false || wordDictionaryCheck(word) == false);
+		 std::cout << std::endl;
+
 	}
 	
 	return 0;
@@ -89,18 +106,25 @@ void printMenu()
 	std::cout << "Enter your number choice from menu: ";
 } 
 
-std::string getAvailableLetters(int letterCount)
+std::string getAvailableLetters()
 {
-	std::string letters;
 	srand(time(0));
-	for (int i = 0; i < letterCount; i++)
+	int finalNum = rand() % (42) + 1;
+
+	std::fstream letterFile;
+	letterFile.open("availableLetters.txt", std::fstream::in);
+	std::string letters;
+
+	if (letterFile.is_open())
 	{
-		char letter = char('a' + rand() % 26);
-		letters += letter;
-		letters += ' ';
+		for (int k = 0; k < finalNum; k++)
+		{
+			getline(letterFile, letters);
+		}
+		letterFile.close();
 	}
-	
-	return letters;
+
+	return letters; 
 }
 
 bool lettersCheck(const std::string& inputWord, std::string& availableLetters)
@@ -154,5 +178,8 @@ bool wordDictionaryCheck(const std::string& inputWord)
 		   }
 		}
 	}
+
+	wordFile.close();
+
 	return check;
 } 
