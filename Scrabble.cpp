@@ -3,10 +3,10 @@
 #include <string>
 
 void printMenu();
-std::string getAvailableLetters();
+void addWordToTheDictionary();
+std::string getAvailableLetters(int letterCount);
 bool lettersCheck(const std::string& inputWord, std::string& availableLetters);
 bool wordDictionaryCheck(const std::string& inputWord); 
-void addWordToTheDictionary();
 
 int main()
 {
@@ -70,14 +70,14 @@ int main()
 	{   
 		std::cout << std::endl;
 		std::cout << "Round "<< i << ". Available letters: "; 
-		std::string availableLetters = getAvailableLetters();
+		std::string availableLetters = getAvailableLetters(letterCount);
 		std::cout << availableLetters << std::endl;
 
 		std::cout << "Enter a word: " << std::endl;
 		std::string word;
 
 		do 
-{
+        {
 			std::cin >> word;
 
 			if (lettersCheck(word, availableLetters) == true && wordDictionaryCheck(word) == true)
@@ -93,9 +93,10 @@ int main()
 				std::cout << "Try again with: ";
 				std::cout << availableLetters << std::endl;
 			}
-		} while (lettersCheck(word, availableLetters) == false || wordDictionaryCheck(word) == false);
-		 std::cout << std::endl;
 
+		} while (lettersCheck(word, availableLetters) == false || wordDictionaryCheck(word) == false);
+
+		 std::cout << std::endl;
 	}
 	
 	return 0;
@@ -115,14 +116,39 @@ void printMenu()
 	std::cout << "Enter your number choice from menu: ";
 } 
 
-std::string getAvailableLetters()
+void addWordToTheDictionary()
+{
+	std::fstream wordFile;
+	wordFile.open("wordDictionarty.txt", std::fstream::out | std::fstream::app);
+
+	if (wordFile.is_open())
+	{
+		std::string wordInput;
+		std::cout << "Add a word to the dictionary: ";
+		std::cin >> wordInput;
+
+		wordFile << std::endl << wordInput;
+		std::cout << "Your word was added." << std::endl;
+		wordFile.close();
+	}
+}
+
+std::string getAvailableLetters(int letterCount)
 {
 	srand(time(0));
-	int finalNum = rand() % (42) + 1;
+	int finalNum = rand() % (50) + 1;;
 
-	std::fstream letterFile;
-	letterFile.open("availableLetters.txt", std::fstream::in);
 	std::string letters;
+	std::fstream letterFile;
+
+	if (letterCount == 10)
+	{
+		letterFile.open("availableLetters.txt", std::fstream::in);
+	}
+	else if (letterCount == 15)
+	{
+		letterFile.open("availableLongLetters.txt", std::fstream::in);
+	}
 
 	if (letterFile.is_open())
 	{
@@ -192,21 +218,3 @@ bool wordDictionaryCheck(const std::string& inputWord)
 
 	return check;
 } 
-
-void addWordToTheDictionary()
-{
-	
-	std::fstream wordFile;
-	wordFile.open("wordDictionarty.txt", std::fstream::out | std::fstream::app);
-
-	if (wordFile.is_open())
-	{
-		std::string wordInput;
-		std::cout << "Add a word to the dictionary: ";
-		std::cin >> wordInput;
-		wordFile << std::endl << wordInput;
-		std::cout << "Your word was added." << std::endl;
-	}
-	
-	wordFile.close();
-}
