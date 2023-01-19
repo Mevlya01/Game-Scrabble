@@ -10,95 +10,103 @@ bool wordDictionaryCheck(const std::string& inputWord);
 
 int main()
 {
-	printMenu();
-
 	int numberChoiceFromMenu;
-	std::cin >> numberChoiceFromMenu;
 
-	while (numberChoiceFromMenu < 1 || numberChoiceFromMenu > 4)
+	do
 	{
-		std::cout << "Please enter valid number from the menu (1-4) :";
+		printMenu();
 		std::cin >> numberChoiceFromMenu;
-	}
 
-	int roundCount  = 10;
-	int letterCount = 10;
-
-    if (numberChoiceFromMenu == 2)
-	{
-		std::cout << "Enter your setting choice (a or b): ";
-		char settingChoice;
-		std::cin >> settingChoice;
-
-		if (settingChoice == 'b')
+		while (numberChoiceFromMenu < 1 || numberChoiceFromMenu > 4)
 		{
-			std::cout << "Note: maximum possible round count is 20. " << std::endl;
-			std::cout << "Change round count to : ";
-			std::cin >> roundCount;
+			std::cout << "Please enter valid number from the menu (1-4) :";
+			std::cin >> numberChoiceFromMenu;
+		}
 
-			while (roundCount < 1 || roundCount > 20)
+		int roundCount = 10;
+		int letterCount = 10;
+
+		if (numberChoiceFromMenu == 2)
+		{
+			std::cout << "Enter your setting choice (a or b): ";
+			char settingChoice;
+			std::cin >> settingChoice;
+
+			if (settingChoice == 'b')
 			{
-				std::cout << "Round Count should be in the range of [1;20]. Please enter new number: ";
+				std::cout << "Note: maximum possible round count is 20. " << std::endl;
+				std::cout << "Change round count to : ";
 				std::cin >> roundCount;
 
-			}
-		}
-		else if (settingChoice == 'a')
-		{
-			std::cout << "Change letter count to 15 or stay at 10 (Enter 15 or 10): ";
-			std::cin >>letterCount;
+				while (roundCount < 1 || roundCount > 20)
+				{
+					std::cout << "Round Count should be in the range of [1;20]. Please enter new number: ";
+					std::cin >> roundCount;
 
-			while (letterCount != 15 && letterCount != 10)
+				}
+			}
+			else if (settingChoice == 'a')
 			{
-				std::cout << "Please enter valid letter count (15 or 10) :";
+				std::cout << "Change letter count to 15 or stay at 10 (Enter 15 or 10): ";
 				std::cin >> letterCount;
+
+				while (letterCount != 15 && letterCount != 10)
+				{
+					std::cout << "Please enter valid letter count (15 or 10) :";
+					std::cin >> letterCount;
+				}
 			}
 		}
-	}
-	else if (numberChoiceFromMenu == 3)
-	{
-		addWordToTheDictionary();
-	}
-	else if (numberChoiceFromMenu == 4)
-	{
-		return 0;
-	}
+		else if (numberChoiceFromMenu == 3)
+		{
+			addWordToTheDictionary();
+		}
+		else if (numberChoiceFromMenu == 4)
+		{
+			return 0;
+		}
 
-	int totalPoints = 0;
-	
-	for (int i = 1; i <= roundCount; i++)
-	{   
+		int totalPoints = 0;
+
+		for (int i = 1; i <= roundCount; i++)
+		{
+			std::cout << std::endl;
+			std::cout << "Round " << i << ". Available letters: ";
+			std::string availableLetters = getAvailableLetters(letterCount);
+			std::cout << availableLetters << std::endl;
+
+			std::cout << "Enter a word: " << std::endl;
+			std::string word;
+
+			do
+			{
+				std::cin >> word;
+
+				if (lettersCheck(word, availableLetters) == true && wordDictionaryCheck(word) == true)
+				{
+					int letterCountOfWord = word.size();
+					totalPoints += letterCountOfWord;
+					std::cout << "Correct! Total points: " << totalPoints;
+					break;
+				}
+				else
+				{
+					std::cout << "Invalid word." << std::endl;
+					std::cout << "Try again with: ";
+					std::cout << availableLetters << std::endl;
+				}
+
+			} while (lettersCheck(word, availableLetters) == false || wordDictionaryCheck(word) == false);
+
+			std::cout << std::endl;
+		}
+
 		std::cout << std::endl;
-		std::cout << "Round "<< i << ". Available letters: "; 
-		std::string availableLetters = getAvailableLetters(letterCount);
-		std::cout << availableLetters << std::endl;
+		std::cout << "Your points are: " << totalPoints << std::endl;
+		std::cout << std::endl;
 
-		std::cout << "Enter a word: " << std::endl;
-		std::string word;
+	} while (numberChoiceFromMenu != 4);
 
-		do 
-        {
-			std::cin >> word;
-
-			if (lettersCheck(word, availableLetters) == true && wordDictionaryCheck(word) == true)
-			{
-				int letterCountOfWord = word.size();
-				totalPoints += letterCountOfWord;
-				std::cout << "Correct! Total points: " << totalPoints;
-				break;
-			}
-			else
-			{
-				std::cout << "Invalid word." << std::endl;
-				std::cout << "Try again with: ";
-				std::cout << availableLetters << std::endl;
-			}
-
-		} while (lettersCheck(word, availableLetters) == false || wordDictionaryCheck(word) == false);
-
-		 std::cout << std::endl;
-	}
-	
 	return 0;
 }
 
