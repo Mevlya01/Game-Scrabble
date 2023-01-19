@@ -6,6 +6,7 @@ void printMenu();
 std::string getAvailableLetters();
 bool lettersCheck(const std::string& inputWord, std::string& availableLetters);
 bool wordDictionaryCheck(const std::string& inputWord); 
+void addWordToTheDictionary();
 
 int main()
 {
@@ -53,6 +54,14 @@ int main()
 				std::cin >> letterCount;
 			}
 		}
+	}
+	else if (numberChoiceFromMenu == 3)
+	{
+		addWordToTheDictionary();
+	}
+	else if (numberChoiceFromMenu == 4)
+	{
+		return 0;
 	}
 
 	int totalPoints = 0;
@@ -183,3 +192,21 @@ bool wordDictionaryCheck(const std::string& inputWord)
 
 	return check;
 } 
+
+void addWordToTheDictionary()
+{
+	
+	std::fstream wordFile;
+	wordFile.open("wordDictionarty.txt", std::fstream::out | std::fstream::app);
+
+	if (wordFile.is_open())
+	{
+		std::string wordInput;
+		std::cout << "Add a word to the dictionary: ";
+		std::cin >> wordInput;
+		wordFile << std::endl << wordInput;
+		std::cout << "Your word was added." << std::endl;
+	}
+	
+	wordFile.close();
+}
