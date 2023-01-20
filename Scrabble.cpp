@@ -1,3 +1,18 @@
+/**
+*
+* Solution to course project # 8
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia University
+* Winter semester 2022/2023
+*
+* @author Mevlya Ryustemova
+* @idnumber 0MI0600076
+* @compiler VC
+*
+* <file with helper functions>
+*
+*/
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -5,61 +20,40 @@
 void printMenu();
 void addWordToTheDictionary();
 std::string getAvailableLetters(int letterCount);
-bool lettersCheck(const std::string& inputWord, std::string& availableLetters);
+bool lettersCheck(const std::string& inputWord, const std::string& availableLetters);
 bool wordDictionaryCheck(const std::string& inputWord); 
+int changeLetterCount(int letterCount);
+int changeRoundCount(int roundCount);
+int menuChoiceInput();
+char settingChoiceInput();
+void printPoints(int points);
+void printRoundNumber(int i);
 
 int main()
 {
-	int numberChoiceFromMenu;
-
-	do
-	{
+	do 
+	{ 
 		printMenu();
-		std::cin >> numberChoiceFromMenu;
-
-		while (numberChoiceFromMenu < 1 || numberChoiceFromMenu > 4)
-		{
-			std::cout << "Please enter valid number from the menu (1-4) :";
-			std::cin >> numberChoiceFromMenu;
-		}
-
+		int numberChoiceFromMenu = menuChoiceInput();
 		int roundCount = 10;
 		int letterCount = 10;
 
 		if (numberChoiceFromMenu == 2)
 		{
-			std::cout << "Enter your setting choice (a or b): ";
-			char settingChoice;
-			std::cin >> settingChoice;
-
+			char settingChoice = settingChoiceInput();
 			if (settingChoice == 'b')
 			{
-				std::cout << "Note: maximum possible round count is 20. " << std::endl;
-				std::cout << "Change round count to : ";
-				std::cin >> roundCount;
-
-				while (roundCount < 1 || roundCount > 20)
-				{
-					std::cout << "Round Count should be in the range of [1;20]. Please enter new number: ";
-					std::cin >> roundCount;
-
-				}
+				roundCount = changeRoundCount(roundCount);
 			}
 			else if (settingChoice == 'a')
 			{
-				std::cout << "Change letter count to 15 or stay at 10 (Enter 15 or 10): ";
-				std::cin >> letterCount;
-
-				while (letterCount != 15 && letterCount != 10)
-				{
-					std::cout << "Please enter valid letter count (15 or 10) :";
-					std::cin >> letterCount;
-				}
+				letterCount = changeLetterCount(letterCount);
 			}
 		}
 		else if (numberChoiceFromMenu == 3)
 		{
 			addWordToTheDictionary();
+			continue;
 		}
 		else if (numberChoiceFromMenu == 4)
 		{
@@ -67,21 +61,17 @@ int main()
 		}
 
 		int totalPoints = 0;
-
 		for (int i = 1; i <= roundCount; i++)
 		{
-			std::cout << std::endl;
-			std::cout << "Round " << i << ". Available letters: ";
+			printRoundNumber(i);
 			std::string availableLetters = getAvailableLetters(letterCount);
 			std::cout << availableLetters << std::endl;
-
 			std::cout << "Enter a word: " << std::endl;
 			std::string word;
 
 			do
 			{
 				std::cin >> word;
-
 				if (lettersCheck(word, availableLetters) == true && wordDictionaryCheck(word) == true)
 				{
 					int letterCountOfWord = word.size();
@@ -97,15 +87,11 @@ int main()
 				}
 
 			} while (lettersCheck(word, availableLetters) == false || wordDictionaryCheck(word) == false);
-
 			std::cout << std::endl;
 		}
+		printPoints(totalPoints);
 
-		std::cout << std::endl;
-		std::cout << "Your points are: " << totalPoints << std::endl;
-		std::cout << std::endl;
-
-	} while (numberChoiceFromMenu != 4);
+	} while (true);
 
 	return 0;
 }
@@ -121,22 +107,21 @@ void printMenu()
 	std::cout << "3. Enter a new word" << std::endl;
 	std::cout << "4. Exit" << std::endl;
 	std::cout << std::endl;
-	std::cout << "Enter your number choice from menu: ";
 } 
 
 void addWordToTheDictionary()
 {
 	std::fstream wordFile;
-	wordFile.open("wordDictionarty.txt", std::fstream::out | std::fstream::app);
+	wordFile.open("wordDictionary.txt", std::fstream::out | std::fstream::app);
 
 	if (wordFile.is_open())
 	{
 		std::string wordInput;
 		std::cout << "Add a word to the dictionary: ";
 		std::cin >> wordInput;
-
 		wordFile << std::endl << wordInput;
 		std::cout << "Your word was added." << std::endl;
+		std::cout << std::endl;
 		wordFile.close();
 	}
 }
@@ -170,7 +155,7 @@ std::string getAvailableLetters(int letterCount)
 	return letters; 
 }
 
-bool lettersCheck(const std::string& inputWord, std::string& availableLetters)
+bool lettersCheck(const std::string& inputWord, const std::string& availableLetters)
 {   
 	bool check = false;
 
@@ -206,7 +191,7 @@ bool wordDictionaryCheck(const std::string& inputWord)
 	bool check = false;
 
 	std::fstream wordFile;
-	wordFile.open("wordDictionarty.txt", std::fstream::in);
+	wordFile.open("wordDictionary.txt", std::fstream::in);
 	
 	if (wordFile.is_open())
 	{  
@@ -226,3 +211,74 @@ bool wordDictionaryCheck(const std::string& inputWord)
 
 	return check;
 } 
+
+int changeLetterCount(int letterCount) 
+{
+	std::cout << "Change letter count to 15 or stay at 10 (Enter 15 or 10): ";
+	std::cin >> letterCount;
+
+	while (letterCount != 15 && letterCount != 10)
+	{
+		std::cout << "Please enter valid letter count (15 or 10) :";
+		std::cin >> letterCount;
+	}
+
+	return letterCount;
+}
+
+int changeRoundCount(int roundCount)
+{
+	std::cout << "Note: maximum possible round count is 20. " << std::endl;
+	std::cout << "Change round count to : ";
+	std::cin >> roundCount;
+
+	while (roundCount < 1 || roundCount > 20)
+	{
+		std::cout << "Round Count should be in the range of [1;20]. Please enter new number: ";
+		std::cin >> roundCount;
+	}
+
+	return roundCount;
+}
+
+int menuChoiceInput()
+{   
+	int numberChoiceFromMenu;
+	std::cout << "Enter your number choice from menu: ";
+	std::cin >> numberChoiceFromMenu;
+	while (numberChoiceFromMenu < 1 || numberChoiceFromMenu > 4)
+	{
+		std::cout << "Please enter valid number from the menu (1-4) :";
+		std::cin >> numberChoiceFromMenu;
+	}
+
+	return numberChoiceFromMenu;
+}
+
+char settingChoiceInput()
+{
+	char settingChoice;
+	std::cout << "Enter your setting choice (a or b): ";
+	std::cin >> settingChoice;
+
+	while (settingChoice != 'a' && settingChoice != 'b')
+	{
+		std::cout << "Please enter valid setting choice (a or b): ";
+		std::cin >> settingChoice;
+	}
+
+	return settingChoice;
+}
+
+void printPoints(int points)
+{
+	std::cout << std::endl;
+	std::cout << "Your points for the game are: " << points << std::endl;
+	std::cout << std::endl;
+}
+
+void printRoundNumber(int i)
+{
+	std::cout << std::endl;
+	std::cout << "Round " << i << ". Available letters: ";
+}
