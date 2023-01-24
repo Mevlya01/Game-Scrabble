@@ -96,10 +96,20 @@ int main()
 	return 0;
 }
 
-void printMenu()
+void printDesign()
 {
-	std::cout << "Game Scrabble" << std::endl;
-	std::cout << std::endl;
+	for (int i = 0; i < 10; i++)
+	{
+		std::cout << "#";
+	}
+}
+
+void printMenu()
+{   
+	printDesign();
+	std::cout << " Game Scrabble ";
+	printDesign();
+	std::cout << std::endl << std::endl;
 	std::cout << "1. New Game" << std::endl;
 	std::cout << "2. Settings" << std::endl;
 	std::cout << "   a. Change the count of the given letters" << std::endl;
